@@ -45,6 +45,12 @@ class App extends React.Component {
     }));
   }
 
+  deleteTask = (id) => {
+    this.setState(prevState => ({
+      tasks: prevState.tasks.filter(task => task.id !== id)
+    }));
+  }
+
   render() {
     return (
       <div className="App">
@@ -60,6 +66,7 @@ class App extends React.Component {
               <span className={task.done ? 'task-done' : 'task-not-done'}>
                 {task.name}
               </span>
+              <button onClick={() => this.deleteTask(task.id)}>Delete</button>
             </li>
           ))}
         </ul>
