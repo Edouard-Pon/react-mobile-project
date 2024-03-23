@@ -36,6 +36,15 @@ class App extends React.Component {
     }));
   }
 
+  addTask = (name) => {
+    this.setState(prevState => ({
+      tasks: [
+        ...prevState.tasks,
+        { id: prevState.tasks.length + 1, name, done: false }
+      ]
+    }));
+  }
+
   render() {
     return (
       <div className="App">
@@ -56,6 +65,7 @@ class App extends React.Component {
         </ul>
         <Footer
           onFilterInput={this.handleFilterInput}
+          onAddTask={this.addTask}
         />
       </div>
     );

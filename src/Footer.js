@@ -1,4 +1,17 @@
-function Footer({ onFilterInput }) {
+import React, { useState } from 'react';
+import Modal from './Modal';
+
+function Footer({ onFilterInput, onAddTask }) {
+  const [isPopupVisible, setPopupVisible] = useState(false);
+
+  const handleButtonClick = () => {
+    setPopupVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setPopupVisible(false);
+  };
+
   return (
     <div className="Footer">
       <footer className="Footer-footer">
@@ -7,8 +20,13 @@ function Footer({ onFilterInput }) {
           placeholder="Filter tasks..."
           onChange={event => onFilterInput(event.target.value)}
         />
-        <button>New Task</button>
+        <button onClick={handleButtonClick}>New Task</button>
       </footer>
+      <Modal
+        isVisible={isPopupVisible}
+        onAddTask={onAddTask}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }
