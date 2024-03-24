@@ -16,13 +16,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: [
-        { id: '1', name: 'Task 1', done: false, order: 1, limitDate: '2021-12-31', category: 'priority' },
-        { id: '2', name: 'Task 2', done: false, order: 2, limitDate: '2021-12-31', category: 'priority' },
-        { id: '3', name: 'Task 3', done: false, order: 3, limitDate: '2021-12-31', category: 'email' },
-        { id: '4', name: 'Task 4', done: false, order: 4, limitDate: '2021-12-31', category: 'important' },
-        { id: '5', name: 'Task 5', done: false, order: 5, limitDate: '2021-12-31', category: 'priority' }
-      ],
+      tasks: [],
       filter: '',
       selectedTask: null,
       isPopupVisible: false,
@@ -93,6 +87,8 @@ class App extends React.Component {
   }
 
   deleteTask = (id) => {
+    const userConfirmation = window.confirm("Are you sure you want to delete this task");
+    if (!userConfirmation) return;
     this.setState(prevState => {
       const tasks = prevState.tasks.filter(task => task.id !== id);
       tasks.forEach((task, index) => {
