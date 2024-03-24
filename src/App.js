@@ -144,47 +144,75 @@ class App extends React.Component {
     }
   }
 
+  spanClass = (task) => {
+    const dateLimitExceeded = new Date() < new Date(task.limitDate);
+    const limitDateExists = task.limitDate;
+
+    let spanClass = '';
+    if (!limitDateExists && !dateLimitExceeded) {
+      spanClass = 'App-task-item-span-three';
+    } else if (!limitDateExists || dateLimitExceeded) {
+      spanClass = 'App-task-item-span-two';
+    }
+    return spanClass;
+  }
+
   render() {
     return (
       <div className="App">
-        <h1>Tasks</h1>
         <Header
           taskCount={this.taskCount()}
           headerOpacity={this.state.headerOpacity}
         />
-        <ul>
-          {this.filteredTasks().map(task => (
-            <li key={task.id}>
-              {
-                (task.category === 'priority' && <PriorityHighIcon/>) ||
-                (task.category === 'important' && <LabelImportantIcon/>) ||
-                (task.category === 'email' && <EmailIcon/>)
-              }
-              <input
-                type="checkbox"
-                checked={task.done}
-                onChange={event => this.handleTaskStatus(task.id, event.target.checked)}
-              />
-              <span className={task.done ? 'task-done' : 'task-not-done'}>
-                {task.name}
-              </span>
-              {task.limitDate && <span> - {new Date(task.limitDate).toLocaleDateString('en-GB')}</span>}
-              {new Date() > new Date(task.limitDate) && <span>The date limit has been exceeded</span>}
-              <button onClick={() => this.displayEditTask(task)}>
-                <EditIcon/>
-              </button>
-              <button onClick={() => this.deleteTask(task.id)}>
-                <DeleteForeverIcon/>
-              </button>
-              <button disabled={task.order === 1} onClick={() => this.moveTask(task.id, 'up')}>
-                <ArrowUpwardIcon/>
-              </button>
-              <button disabled={task.order === this.state.tasks.length} onClick={() => this.moveTask(task.id, 'down')}>
-                <ArrowDownwardIcon/>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <div className="App-tasks">
+          <ul>
+            {this.filteredTasks().map(task => (
+              <li className="App-task" key={task.id}>
+                <div className={`${task.done ? 'task-done' : ''} App-task-item center`}>
+                  {
+                    (task.category === 'priority' && <PriorityHighIcon/>) ||
+                    (task.category === 'important' && <LabelImportantIcon/>) ||
+                    (task.category === 'email' && <EmailIcon/>)
+                  }
+                </div>
+                <div className={`${task.done ? 'task-done' : ''} App-task-item center`}>
+                  <input
+                    type="checkbox"
+                    checked={task.done}
+                    onChange={event => this.handleTaskStatus(task.id, event.target.checked)}
+                  />
+                </div>
+                <div className={`${task.done ? 'task-done' : ''} App-task-item ${this.spanClass(task)}`}>
+                  <span>
+                    {task.name}
+                  </span>
+                </div>
+                {task.limitDate && <span className={`${task.done ? 'task-done' : ''} App-task-item center`}>{new Date(task.limitDate).toLocaleDateString('en-GB')}</span>}
+                {new Date() > new Date(task.limitDate) && <span className={`${task.done ? 'task-done' : ''} App-task-item`}>The date limit has been exceeded</span>}
+                <div className="App-task-item App-buttons">
+                  <button className="btn-primary" onClick={() => this.displayEditTask(task)}>
+                    <EditIcon/>
+                  </button>
+                  <button className="btn-danger" onClick={() => this.deleteTask(task.id)}>
+                    <DeleteForeverIcon/>
+                  </button>
+                  <button
+                    className="btn-primary"
+                    disabled={task.order === 1 || this.state.filter !== ''}
+                    onClick={() => this.moveTask(task.id, 'up')}>
+                    <ArrowUpwardIcon/>
+                  </button>
+                  <button
+                    className="btn-danger"
+                    disabled={task.order === this.state.tasks.length || this.state.filter !== ''}
+                    onClick={() => this.moveTask(task.id, 'down')}>
+                    <ArrowDownwardIcon/>
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
         <Modal
           isVisible={this.state.isPopupVisible}
           handleTaskEvent={this.handleTaskEvent}

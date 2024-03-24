@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+
 
 function ModalComponent({ isVisible, handleTaskEvent, onClose, initialTaskName, initialLimitDate, initialCategory }) {
   const [taskName, setTaskName] = useState(initialTaskName);
@@ -28,40 +31,33 @@ function ModalComponent({ isVisible, handleTaskEvent, onClose, initialTaskName, 
       onClose={onClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
+      className="modal"
     >
-      <Box sx={{
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 400,
-        bgcolor: 'background.paper',
-        border: '2px solid #000',
-        boxShadow: 24,
-        p: 4
-      }}>
+      <Box className="modal-box">
         <Typography id="modal-modal-title" variant="h6" component="h2">
-          Task
+          <span className="modal-title">{initialTaskName === '' ? 'Add Task' : 'Edit Task'}</span>
         </Typography>
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+        <Typography id="modal-modal-description" sx={{ mt: 2 }} className="modal-description">
           <input
             type="text"
             placeholder="Task name..."
             value={taskName}
             onChange={event => setTaskName(event.target.value)}
+            className="modal-input"
           />
           <input
             type="date"
             value={limitDate}
             onChange={event => setLimitDate(event.target.value)}
+            className="modal-input"
           />
-          <select value={category} onChange={event => setCategory(event.target.value)}>
+          <select value={category} onChange={event => setCategory(event.target.value)} className="modal-select">
             <option disabled={true} value="">Category</option>
             <option value="priority">Priority</option>
             <option value="important">Important</option>
             <option value="email">Email</option>
           </select>
-          <button onClick={handleTask}>{initialTaskName === '' ? 'Add Task' : 'Update Task'}</button>
+          <button onClick={handleTask} className="modal-button btn-primary center">{initialTaskName === '' ? <AddIcon/> : <EditIcon/>}</button>
         </Typography>
       </Box>
     </Modal>

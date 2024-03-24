@@ -6,7 +6,7 @@ function Footer({ onSearchInput, displayAddTask, saveToLocalStorage }) {
   return (
     <div className="Footer">
       <footer className="Footer-footer">
-        <button onClick={saveToLocalStorage}>
+        <button className="btn-primary" onClick={saveToLocalStorage}>
           <SaveIcon/>
         </button>
         <input
@@ -14,7 +14,7 @@ function Footer({ onSearchInput, displayAddTask, saveToLocalStorage }) {
           placeholder="Quick search..."
           onChange={event => onSearchInput(event.target.value)}
         />
-        <button onClick={displayAddTask}>
+        <button className="btn-primary" onClick={displayAddTask}>
           <AddIcon/>
         </button>
       </footer>
