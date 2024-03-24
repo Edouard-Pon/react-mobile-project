@@ -4,17 +4,20 @@ import Header from './Header';
 import Footer from './Footer';
 import Modal from './Modal';
 import { v4 as uuid } from 'uuid';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+import LabelImportantIcon from '@mui/icons-material/LabelImportant';
+import EmailIcon from '@mui/icons-material/Email';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       tasks: [
-        { id: '1', name: 'Task 1', done: false, order: 1, limitDate: '2021-12-31' },
-        { id: '2', name: 'Task 2', done: false, order: 2, limitDate: '2021-12-31' },
-        { id: '3', name: 'Task 3', done: false, order: 3, limitDate: '2021-12-31' },
-        { id: '4', name: 'Task 4', done: false, order: 4, limitDate: '2021-12-31' },
-        { id: '5', name: 'Task 5', done: false, order: 5, limitDate: '2021-12-31' }
+        { id: '1', name: 'Task 1', done: false, order: 1, limitDate: '2021-12-31', category: 'priority' },
+        { id: '2', name: 'Task 2', done: false, order: 2, limitDate: '2021-12-31', category: 'priority' },
+        { id: '3', name: 'Task 3', done: false, order: 3, limitDate: '2021-12-31', category: 'email' },
+        { id: '4', name: 'Task 4', done: false, order: 4, limitDate: '2021-12-31', category: 'important' },
+        { id: '5', name: 'Task 5', done: false, order: 5, limitDate: '2021-12-31', category: 'priority' }
       ],
       filter: '',
       selectedTask: null,
@@ -65,11 +68,11 @@ class App extends React.Component {
     }));
   }
 
-  handleTaskEvent = (name, limitDate) => {
+  handleTaskEvent = (name, limitDate, category) => {
     if (this.state.selectedTask) {
       this.setState(prevState => ({
         tasks: prevState.tasks.map(task =>
-          task.id === prevState.selectedTask.id ? { ...task, name, limitDate } : task
+          task.id === prevState.selectedTask.id ? { ...task, name, limitDate, category } : task
         ),
         selectedTask: null
       }));
@@ -78,7 +81,7 @@ class App extends React.Component {
       this.setState(prevState => ({
         tasks: [
           ...prevState.tasks,
-          { id: uuid(), name, done: false, order: prevState.tasks.length + 1, limitDate }
+          { id: uuid(), name, done: false, order: prevState.tasks.length + 1, limitDate, category }
         ]
       }));
     }
@@ -147,6 +150,11 @@ class App extends React.Component {
         <ul>
           {this.filteredTasks().map(task => (
             <li key={task.id}>
+              {
+                task.category === 'priority' && <PriorityHighIcon /> ||
+                task.category === 'important' && <LabelImportantIcon /> ||
+                task.category === 'email' && <EmailIcon />
+              }
               <input
                 type="checkbox"
                 checked={task.done}
@@ -170,6 +178,7 @@ class App extends React.Component {
           onClose={this.closePopup}
           initialTaskName={this.state.selectedTask ? this.state.selectedTask.name : ''}
           initialLimitDate={this.state.selectedTask ? this.state.selectedTask.limitDate : ''}
+          initialCategory={this.state.selectedTask ? this.state.selectedTask.category : ''}
         />
         <Footer
           onSearchInput={this.handleSearchInput}

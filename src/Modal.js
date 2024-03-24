@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
 
-function Modal({ isVisible, handleTaskEvent, onClose, initialTaskName, initialLimitDate }) {
+function Modal({ isVisible, handleTaskEvent, onClose, initialTaskName, initialLimitDate, initialCategory }) {
   const [taskName, setTaskName] = useState(initialTaskName);
   const [limitDate, setLimitDate] = useState(initialLimitDate);
+  const [category, setCategory] = useState(initialCategory);
 
   useEffect(() => {
     setTaskName(initialTaskName);
     setLimitDate(initialLimitDate);
-  }, [initialTaskName, initialLimitDate]);
+    setCategory(initialCategory);
+  }, [initialTaskName, initialLimitDate, initialCategory]);
 
   const handleTask = () => {
-    handleTaskEvent(taskName, limitDate);
+    handleTaskEvent(taskName, limitDate, category);
     setTaskName('');
     setLimitDate('');
+    setCategory('');
     onClose();
   };
 
@@ -33,6 +36,12 @@ function Modal({ isVisible, handleTaskEvent, onClose, initialTaskName, initialLi
         value={limitDate}
         onChange={event => setLimitDate(event.target.value)}
       />
+      <select value={category} onChange={event => setCategory(event.target.value)}>
+        <option disabled={true} value="">Category</option>
+        <option value="priority">Priority</option>
+        <option value="important">Important</option>
+        <option value="email">Email</option>
+      </select>
       <button onClick={handleTask}>{initialTaskName === '' ? 'Add Task' : 'Update Task'}</button>
     </div>
   );
