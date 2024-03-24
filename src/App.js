@@ -22,6 +22,16 @@ class App extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const tasks = localStorage.getItem('tasks');
+    if (tasks) {
+      const userConfirmation = window.confirm("Do you want to load the tasks from localStorage?");
+      if (userConfirmation) {
+        this.loadFromLocalStorage(tasks);
+      }
+    }
+  }
+
   taskCount = () => {
     const done = this.state.tasks.filter(task => task.done).length;
     const remaining = this.state.tasks.length - done;
@@ -60,9 +70,13 @@ class App extends React.Component {
   }
 
   deleteTask = (id) => {
-    this.setState(prevState => ({
-      tasks: prevState.tasks.filter(task => task.id !== id)
-    }));
+    this.setState(prevState => {
+      const tasks = prevState.tasks.filter(task => task.id !== id);
+      tasks.forEach((task, index) => {
+        task.order = index + 1;
+      });
+      return { tasks };
+    });
   }
 
   displayEditTask = (task) => {
@@ -96,6 +110,17 @@ class App extends React.Component {
     });
   }
 
+  saveToLocalStorage = () => {
+    localStorage.setItem('tasks', JSON.stringify(this.state.tasks));
+  }
+
+  loadFromLocalStorage = (tasks) => {
+    tasks = JSON.parse(tasks);
+    if (tasks) {
+      this.setState({ tasks });
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -114,6 +139,7 @@ class App extends React.Component {
               <button onClick={() => this.displayEditTask(task)}>Edit</button>
               <button onClick={() => this.deleteTask(task.id)}>Delete</button>
               <button disabled={task.order === 1} onClick={() => this.moveTask(task.id, 'up')}>Move Up</button>
+              {task.order} and {this.state.tasks.length}
               <button disabled={task.order === this.state.tasks.length} onClick={() => this.moveTask(task.id, 'down')}>Move Down</button>
             </li>
           ))}
@@ -127,6 +153,7 @@ class App extends React.Component {
         <Footer
           onFilterInput={this.handleFilterInput}
           displayAddTask={this.displayAddTask}
+          saveToLocalStorage={this.saveToLocalStorage}
         />
       </div>
     );
