@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-function Modal({ isVisible, onAddTask, onClose }) {
-  const [newTaskName, setNewTaskName] = useState('');
+function Modal({ isVisible, handleTaskEvent, onClose, initialTaskName }) {
+  const [taskName, setTaskName] = useState(initialTaskName);
 
-  const handleAddTask = () => {
-    onAddTask(newTaskName);
-    setNewTaskName('');
+  useEffect(() => {
+    setTaskName(initialTaskName);
+  }, [initialTaskName]);
+
+  const handleTask = () => {
+    handleTaskEvent(taskName);
+    setTaskName('');
     onClose();
   };
 
@@ -18,10 +22,10 @@ function Modal({ isVisible, onAddTask, onClose }) {
       <input
         type="text"
         placeholder="Task name..."
-        value={newTaskName}
-        onChange={event => setNewTaskName(event.target.value)}
+        value={taskName}
+        onChange={event => setTaskName(event.target.value)}
       />
-      <button onClick={handleAddTask}>Add Task</button>
+      <button onClick={handleTask}>{initialTaskName === '' ? 'Add Task' : 'Update Task'}</button>
     </div>
   );
 }
