@@ -7,6 +7,10 @@ import { v4 as uuid } from 'uuid';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import LabelImportantIcon from '@mui/icons-material/LabelImportant';
 import EmailIcon from '@mui/icons-material/Email';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 class App extends React.Component {
   constructor(props) {
@@ -152,9 +156,9 @@ class App extends React.Component {
           {this.filteredTasks().map(task => (
             <li key={task.id}>
               {
-                task.category === 'priority' && <PriorityHighIcon /> ||
-                task.category === 'important' && <LabelImportantIcon /> ||
-                task.category === 'email' && <EmailIcon />
+                (task.category === 'priority' && <PriorityHighIcon/>) ||
+                (task.category === 'important' && <LabelImportantIcon/>) ||
+                (task.category === 'email' && <EmailIcon/>)
               }
               <input
                 type="checkbox"
@@ -166,10 +170,18 @@ class App extends React.Component {
               </span>
               {task.limitDate && <span> - {new Date(task.limitDate).toLocaleDateString('en-GB')}</span>}
               {new Date() > new Date(task.limitDate) && <span>The date limit has been exceeded</span>}
-              <button onClick={() => this.displayEditTask(task)}>Edit</button>
-              <button onClick={() => this.deleteTask(task.id)}>Delete</button>
-              <button disabled={task.order === 1} onClick={() => this.moveTask(task.id, 'up')}>Move Up</button>
-              <button disabled={task.order === this.state.tasks.length} onClick={() => this.moveTask(task.id, 'down')}>Move Down</button>
+              <button onClick={() => this.displayEditTask(task)}>
+                <EditIcon/>
+              </button>
+              <button onClick={() => this.deleteTask(task.id)}>
+                <DeleteForeverIcon/>
+              </button>
+              <button disabled={task.order === 1} onClick={() => this.moveTask(task.id, 'up')}>
+                <ArrowUpwardIcon/>
+              </button>
+              <button disabled={task.order === this.state.tasks.length} onClick={() => this.moveTask(task.id, 'down')}>
+                <ArrowDownwardIcon/>
+              </button>
             </li>
           ))}
         </ul>
