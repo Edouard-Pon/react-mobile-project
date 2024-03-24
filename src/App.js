@@ -188,7 +188,7 @@ class App extends React.Component {
                   </span>
                 </div>
                 {task.limitDate && <span className={`${task.done ? 'task-done' : ''} App-task-item center`}>{new Date(task.limitDate).toLocaleDateString('en-GB')}</span>}
-                {new Date() > new Date(task.limitDate) && <span className={`${task.done ? 'task-done' : ''} App-task-item`}>The date limit has been exceeded</span>}
+                {new Date() > new Date(task.limitDate) && <span className={`${task.done ? 'task-done' : ''} App-task-item`}>Date limit exceeded!</span>}
                 <div className="App-task-item App-buttons">
                   <button className="btn-primary" onClick={() => this.displayEditTask(task)}>
                     <EditIcon/>

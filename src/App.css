@@ -289,3 +289,38 @@
   height: 30px;
   cursor: pointer;
 }
+
+@media (max-width: 960px) {
+  .App-task {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: space-between;
+  }
+
+  .App-task-item {
+    width: 100%;
+  }
+
+  .App-task-item:nth-child(-n+2) {
+    flex: 0 0 20%;
+  }
+
+  .App-buttons {
+    justify-content: space-around;
+  }
+
+  .Header-header {
+    flex-direction: column;
+    font-size: 1rem;
+  }
+
+  .Header-title {
+    margin-right: 0;
+  }
+
+  .Header-item {
+    width: 100%;
+  }
+}
