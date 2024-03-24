@@ -10,11 +10,11 @@ class App extends React.Component {
     super(props);
     this.state = {
       tasks: [
-        { id: '1', name: 'Task 1', done: false, order: 1 },
-        { id: '2', name: 'Task 2', done: false, order: 2 },
-        { id: '3', name: 'Task 3', done: false, order: 3},
-        { id: '4', name: 'Task 4', done: false, order: 4 },
-        { id: '5', name: 'Task 5', done: false, order: 5 }
+        { id: '1', name: 'Task 1', done: false, order: 1, limitDate: '2021-12-31' },
+        { id: '2', name: 'Task 2', done: false, order: 2, limitDate: '2021-12-31' },
+        { id: '3', name: 'Task 3', done: false, order: 3, limitDate: '2021-12-31' },
+        { id: '4', name: 'Task 4', done: false, order: 4, limitDate: '2021-12-31' },
+        { id: '5', name: 'Task 5', done: false, order: 5, limitDate: '2021-12-31' }
       ],
       filter: '',
       selectedTask: null,
@@ -65,10 +65,12 @@ class App extends React.Component {
     }));
   }
 
-  handleTaskEvent = (name) => {
+  handleTaskEvent = (name, limitDate) => {
     if (this.state.selectedTask) {
       this.setState(prevState => ({
-        tasks: prevState.tasks.map(task => task.id === prevState.selectedTask.id ? { ...task, name } : task),
+        tasks: prevState.tasks.map(task =>
+          task.id === prevState.selectedTask.id ? { ...task, name, limitDate } : task
+        ),
         selectedTask: null
       }));
     } else {
@@ -76,7 +78,7 @@ class App extends React.Component {
       this.setState(prevState => ({
         tasks: [
           ...prevState.tasks,
-          { id: uuid(), name, done: false, order: prevState.tasks.length + 1 }
+          { id: uuid(), name, done: false, order: prevState.tasks.length + 1, limitDate }
         ]
       }));
     }
@@ -153,6 +155,8 @@ class App extends React.Component {
               <span className={task.done ? 'task-done' : 'task-not-done'}>
                 {task.name}
               </span>
+              {task.limitDate && <span> - {new Date(task.limitDate).toLocaleDateString('en-GB')}</span>}
+              {new Date() > new Date(task.limitDate) && <span>The date limit has been exceeded</span>}
               <button onClick={() => this.displayEditTask(task)}>Edit</button>
               <button onClick={() => this.deleteTask(task.id)}>Delete</button>
               <button disabled={task.order === 1} onClick={() => this.moveTask(task.id, 'up')}>Move Up</button>
@@ -165,6 +169,7 @@ class App extends React.Component {
           handleTaskEvent={this.handleTaskEvent}
           onClose={this.closePopup}
           initialTaskName={this.state.selectedTask ? this.state.selectedTask.name : ''}
+          initialLimitDate={this.state.selectedTask ? this.state.selectedTask.limitDate : ''}
         />
         <Footer
           onSearchInput={this.handleSearchInput}
