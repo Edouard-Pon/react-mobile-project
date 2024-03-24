@@ -10,9 +10,11 @@ class App extends React.Component {
     super(props);
     this.state = {
       tasks: [
-        { id: '1', name: 'Task 1', done: false },
-        { id: '2', name: 'Task 2', done: false },
-        { id: '3', name: 'Task 3', done: false }
+        { id: '1', name: 'Task 1', done: false, order: 1 },
+        { id: '2', name: 'Task 2', done: false, order: 2 },
+        { id: '3', name: 'Task 3', done: false, order: 3},
+        { id: '4', name: 'Task 4', done: false, order: 4 },
+        { id: '5', name: 'Task 5', done: false, order: 5 }
       ],
       filter: '',
       selectedTask: null,
@@ -47,10 +49,11 @@ class App extends React.Component {
         selectedTask: null
       }));
     } else {
+      if (name.trim() === '') return;
       this.setState(prevState => ({
         tasks: [
           ...prevState.tasks,
-          { id: uuid(), name, done: false }
+          { id: uuid(), name, done: false, order: prevState.tasks.length + 1 }
         ]
       }));
     }
@@ -74,6 +77,25 @@ class App extends React.Component {
     this.setState({ isPopupVisible: false });
   }
 
+  moveTask = (id, direction) => {
+    this.setState(prevState => {
+      const tasks = [...prevState.tasks];
+      const taskIndex = tasks.findIndex(task => task.id === id);
+
+      if (direction === 'up' && taskIndex > 0) {
+        [tasks[taskIndex - 1], tasks[taskIndex]] = [tasks[taskIndex], tasks[taskIndex - 1]];
+      } else if (direction === 'down' && taskIndex < tasks.length - 1) {
+        [tasks[taskIndex + 1], tasks[taskIndex]] = [tasks[taskIndex], tasks[taskIndex + 1]];
+      }
+
+      tasks.forEach((task, index) => {
+        task.order = index + 1;
+      });
+
+      return { tasks };
+    });
+  }
+
   render() {
     return (
       <div className="App">
@@ -91,6 +113,8 @@ class App extends React.Component {
               </span>
               <button onClick={() => this.displayEditTask(task)}>Edit</button>
               <button onClick={() => this.deleteTask(task.id)}>Delete</button>
+              <button disabled={task.order === 1} onClick={() => this.moveTask(task.id, 'up')}>Move Up</button>
+              <button disabled={task.order === this.state.tasks.length} onClick={() => this.moveTask(task.id, 'down')}>Move Down</button>
             </li>
           ))}
         </ul>
