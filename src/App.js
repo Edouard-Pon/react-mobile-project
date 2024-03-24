@@ -18,7 +18,8 @@ class App extends React.Component {
       ],
       filter: '',
       selectedTask: null,
-      isPopupVisible: false
+      isPopupVisible: false,
+      headerOpacity: 1
     };
   }
 
@@ -33,17 +34,29 @@ class App extends React.Component {
   }
 
   taskCount = () => {
-    const done = this.state.tasks.filter(task => task.done).length;
-    const remaining = this.state.tasks.length - done;
+    const tasks = this.filteredTasks();
+    const done = tasks.filter(task => task.done).length;
+    const remaining = tasks.length - done;
     return {done, remaining};
   }
 
-  handleFilterInput = (filter) => {
-    this.setState({ filter: filter });
+  handleSearchInput = (search) => {
+    this.setState({ filter: search });
+
+    if (search.trim().length >= 3) {
+      this.setState({ headerOpacity: 1 });
+    } else if (search.trim().length < 3 && search.trim().length > 0) {
+      this.setState({ headerOpacity: 0.5 });
+    }
   }
 
   filteredTasks = () => {
-    return this.state.tasks.filter(task => task.name.toLowerCase().includes(this.state.filter.toLowerCase()));
+    const { tasks, filter } = this.state;
+    let filteredTasks = tasks;
+    if (filter.trim().length >= 3) {
+      filteredTasks = filteredTasks.filter(task => task.name.toLowerCase().includes(filter.toLowerCase()));
+    }
+    return filteredTasks;
   }
 
   handleTaskStatus = (id, checked) => {
@@ -124,7 +137,11 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <Header taskCount={this.taskCount()}/>
+        <h1>Tasks</h1>
+        <Header
+          taskCount={this.taskCount()}
+          headerOpacity={this.state.headerOpacity}
+        />
         <ul>
           {this.filteredTasks().map(task => (
             <li key={task.id}>
@@ -139,7 +156,6 @@ class App extends React.Component {
               <button onClick={() => this.displayEditTask(task)}>Edit</button>
               <button onClick={() => this.deleteTask(task.id)}>Delete</button>
               <button disabled={task.order === 1} onClick={() => this.moveTask(task.id, 'up')}>Move Up</button>
-              {task.order} and {this.state.tasks.length}
               <button disabled={task.order === this.state.tasks.length} onClick={() => this.moveTask(task.id, 'down')}>Move Down</button>
             </li>
           ))}
@@ -151,7 +167,7 @@ class App extends React.Component {
           initialTaskName={this.state.selectedTask ? this.state.selectedTask.name : ''}
         />
         <Footer
-          onFilterInput={this.handleFilterInput}
+          onSearchInput={this.handleSearchInput}
           displayAddTask={this.displayAddTask}
           saveToLocalStorage={this.saveToLocalStorage}
         />
