@@ -46,7 +46,7 @@ class App extends React.Component {
   handleSearchInput = (search) => {
     this.setState({ filter: search });
 
-    if (search.trim().length >= 3) {
+    if (search.trim().length >= 3 || search.trim().length === 0) {
       this.setState({ headerOpacity: 1 });
     } else if (search.trim().length < 3 && search.trim().length > 0) {
       this.setState({ headerOpacity: 0.5 });
@@ -70,6 +70,7 @@ class App extends React.Component {
 
   handleTaskEvent = (name, limitDate, category) => {
     if (this.state.selectedTask) {
+      if (name.trim() === '') return;
       this.setState(prevState => ({
         tasks: prevState.tasks.map(task =>
           task.id === prevState.selectedTask.id ? { ...task, name, limitDate, category } : task
@@ -106,7 +107,7 @@ class App extends React.Component {
   }
 
   closePopup = () => {
-    this.setState({ isPopupVisible: false });
+    this.setState({ isPopupVisible: false, selectedTask: null });
   }
 
   moveTask = (id, direction) => {
